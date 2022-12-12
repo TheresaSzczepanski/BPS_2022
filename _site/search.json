@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "BPS_2022 Redistricting Analysis",
+    "section": "",
+    "text": "BPS Redistricting\n\n\n\n\n\n\n\n\n\n\n\nDec 12, 2022\n\n\nTheresa Szczepanski\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nDec 9, 2022\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Task Force Questions",
+    "section": "",
+    "text": "Read in Enrollment by Selected Populations\n\n\nCode\nBPS_Selected_Pops_Current <- read_excel(\"data_BPS/Selected Populations Reports (School).xlsx\",sheet = \"2022-2023\", skip = 1)%>%\n  select(`School Name`, `First Language Not English #`, `First Language Not English %`, `English Language Learner #`,`English Language Learner %`, `Students With Disabilities #`, `Students With Disabilities %`, contains(\"#...16\"), contains(\"Low\"))%>%\n  filter(str_detect(`School Name`,\"Braintree\"))%>%\n  filter(!str_detect(`School Name`, \"Braintree High\"))%>%\n  filter(!str_detect(`School Name`, \"Middle\"))%>%\n  filter(!str_detect(`School Name`, \"Quab\"))%>%\n  filter(!str_detect(`School Name`, \"Monat\"))%>%\n  mutate(`High Needs %` = `High Needs #...16`)%>%\n  select(!contains(\"...16\")&(contains(\"%\")|contains(\"School Name\")))\n  \n\nBPS_Selected_Pops_Current\n\n\n\n\n  \n\n\n\n\n\nRead in Current Elementary (1-4) Enrollment by Grade\n\n\nCode\nBPS_Elementary_Enrollment_by_Grade_Current <- read_excel(\"data_BPS/Enrollment by Grade (School).xlsx\",sheet = \"2022-2023\", skip = 1)%>%\n  select(`School Name`, `1.0`,`2.0`, `3.0`, `4.0`)%>%\n  filter(str_detect(`School Name`,\"Braintree\"))%>%\n  filter(!str_detect(`School Name`, \"Braintree High\"))%>%\n  pivot_longer(c(2:5), names_to =\"Grade Level\", values_to = \"Enrollment Grade Level\")%>%\n  filter(!str_detect(`School Name`, \"Middle\"))%>%\n  filter(!str_detect(`School Name`, \"Quab\"))%>%\n  filter(!str_detect(`School Name`, \"Monat\"))%>%\n  mutate(`Current MS` = case_when(\n    !str_detect(`School Name`, \"Liberty|Highlands\") ~ \"East\",\n     str_detect(`School Name`, \"Liberty|Highlands\") ~ \"South\"))%>%\n  mutate(`Proposed MS` = case_when(\n    !str_detect(`School Name`, \"Liberty|Highlands|Flaherty\") ~ \"East\",\n     str_detect(`School Name`, \"Liberty|Highlands|Flaherty\") ~ \"South\"))%>%\n  mutate(`Proposed MS2` = case_when(\n    !str_detect(`School Name`, \"Liberty|Highlands|Morrison\") ~ \"East\",\n     str_detect(`School Name`, \"Liberty|Highlands|Morrison\") ~ \"South\"))\n\nBPS_Elementary_Enrollment_by_Grade_Current"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "Since this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  }
+]

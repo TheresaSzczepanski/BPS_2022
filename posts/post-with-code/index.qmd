@@ -1,0 +1,80 @@
+---
+title: "Task Force Questions"
+author: "Theresa Szczepanski"
+date: "2022-12-12"
+
+format:
+  html:
+    df-print: paged
+    toc: true
+    code-fold: true
+    code-copy: true
+    code-tools: true
+categories:
+  - BPS Redistricting
+
+#image: "image.jpg"
+---
+```{r}
+#| label: setup
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(readxl)
+library(hrbrthemes)
+library(viridis)
+library(ggpubr)
+library(purrr)
+library(plotly)
+
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+# Read in Enrollment by Selected Populations
+
+```{r}
+BPS_Selected_Pops_Current <- read_excel("data_BPS/Selected Populations Reports (School).xlsx",sheet = "2022-2023", skip = 1)%>%
+  select(`School Name`, `First Language Not English #`, `First Language Not English %`, `English Language Learner #`,`English Language Learner %`, `Students With Disabilities #`, `Students With Disabilities %`, contains("#...16"), contains("Low"))%>%
+  filter(str_detect(`School Name`,"Braintree"))%>%
+  filter(!str_detect(`School Name`, "Braintree High"))%>%
+  filter(!str_detect(`School Name`, "Middle"))%>%
+  filter(!str_detect(`School Name`, "Quab"))%>%
+  filter(!str_detect(`School Name`, "Monat"))%>%
+  mutate(`High Needs %` = `High Needs #...16`)%>%
+  select(!contains("...16")&(contains("%")|contains("School Name")))
+  
+
+BPS_Selected_Pops_Current
+
+```
+
+# Read in Current Elementary (1-4) Enrollment by Grade
+
+
+```{r}
+BPS_Elementary_Enrollment_by_Grade_Current <- read_excel("data_BPS/Enrollment by Grade (School).xlsx",sheet = "2022-2023", skip = 1)%>%
+  select(`School Name`, `1.0`,`2.0`, `3.0`, `4.0`)%>%
+  filter(str_detect(`School Name`,"Braintree"))%>%
+  filter(!str_detect(`School Name`, "Braintree High"))%>%
+  pivot_longer(c(2:5), names_to ="Grade Level", values_to = "Enrollment Grade Level")%>%
+  filter(!str_detect(`School Name`, "Middle"))%>%
+  filter(!str_detect(`School Name`, "Quab"))%>%
+  filter(!str_detect(`School Name`, "Monat"))%>%
+  mutate(`Current MS` = case_when(
+    !str_detect(`School Name`, "Liberty|Highlands") ~ "East",
+     str_detect(`School Name`, "Liberty|Highlands") ~ "South"))%>%
+  mutate(`Proposed MS` = case_when(
+    !str_detect(`School Name`, "Liberty|Highlands|Flaherty") ~ "East",
+     str_detect(`School Name`, "Liberty|Highlands|Flaherty") ~ "South"))%>%
+  mutate(`Proposed MS2` = case_when(
+    !str_detect(`School Name`, "Liberty|Highlands|Morrison") ~ "East",
+     str_detect(`School Name`, "Liberty|Highlands|Morrison") ~ "South"))
+
+BPS_Elementary_Enrollment_by_Grade_Current
+
+
+
+```
